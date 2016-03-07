@@ -35,10 +35,10 @@
 #' @importFrom dplyr    mutate_each
 #' @examples
 #' dir_name <- system.file("extdata", package = "efreadr")
-#' load_ef_files(dir_name)
+#' read_ef_files(dir_name)
 #' @export
 #' @return a data frame as loaded from the file, added with 'efreadr_year', 'efreadr_file_name' and 'efreadr_site_id' columns, and 'efreadr_date' column for half-hourly fluxes
-load_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, fill_value = "-9999") `: dataframe_with_filename_and_siteid` ({
+read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, fill_value = "-9999") `: dataframe_with_filename_and_siteid` ({
 
   allowed_levels <- c(3, 4)
   allowed_aggr   <- c("h", "d")
@@ -79,7 +79,7 @@ print(dirs)
   fluxes <- dplyr::bind_rows(
     lapply(
       file_list,
-      load_ef_file))
+      read_ef_file))
 
   if (!is.null(fill_value)) {
     fluxes %<>%

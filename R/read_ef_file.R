@@ -20,9 +20,9 @@
 #' @export
 #' @examples
 #' file_name <- system.file("extdata", "CEIP_EC_L4_d_FABar_2015_v02.txt", package = "efreadr")
-#' load_ef_file(file_name)
+#' read_ef_file(file_name)
 #' @return a data frame as loaded from the file, added with 'efreadr_year', 'efreadr_file_name' and 'efreadr_site_id' columns, and 'efreadr_date' column for half-hourly fluxes
-load_ef_file <- function(file_name) `: dataframe_with_filename_and_siteid` ({
+read_ef_file <- function(file_name) `: dataframe_with_filename_and_siteid` ({
   file_name %>% length(.) %>% ensure_that(. == 1, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
   message(sprintf("Loading file '%s'...", file_name))
@@ -39,6 +39,7 @@ load_ef_file <- function(file_name) `: dataframe_with_filename_and_siteid` ({
       `[`,
       c(4, 5, 6)))
 
+  file_metadata %>% length(.) %>% ensure_that(. == 3, err_desc = "Fluxes file name malformed, is it really a fluxes file from European Fluxes Database?")
   names(file_metadata) <- c("aggregation", "site_code", "year")
 
   if (file_metadata["aggregation"] == "h") {
