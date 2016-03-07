@@ -10,5 +10,8 @@ The European Eddy Fluxes Database Cluster distributes fluxes of different Green 
 \author{
 Marco Bascietto \email{marco.bascietto@crea.gov.it}
 }
+\references{
+Source code is hosted at GitHub (\url{https://github.com/mbask/efreadr})
+}
 \keyword{package}
 

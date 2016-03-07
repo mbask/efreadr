@@ -6,7 +6,7 @@
 #' @docType package
 #' @author Marco Bascietto \email{marco.bascietto@@crea.gov.it}
 #' @keywords package
-# @references Source code is hosted at GitHub (\url{http://mbask.github.com/RBSperformance/})
+#' @references Source code is hosted at GitHub (\url{https://github.com/mbask/efreadr})
 NULL
 
 #' @author Marco Bascietto \email{marco.bascietto@@crea.gov.it}
