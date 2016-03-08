@@ -43,7 +43,7 @@ read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, fi
   allowed_levels <- c(3, 4)
   allowed_aggr   <- c("h", "d")
 
-  dirs %>% dir.exists(.) %>% sum(.) %>% ensure_that(. > 0, err_desc = "At least one directory must exist!")
+  dirs %>% dir.exists() %>% sum() %>% ensure_that(. > 0, err_desc = "At least one directory must exist!")
 
   if (is.null(level_l)) {
     level_l <- allowed_levels
@@ -55,8 +55,8 @@ read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, fi
     message(sprintf("Using %s as aggregation", paste(aggregation, collapse = ",")))
   }
 
-  level_l     %>% match(allowed_levels) %>% sum(.) %>% ensure_that(. > 0, err_desc = "Level not allowed")
-  aggregation %>% match(allowed_aggr)   %>% sum(.) %>% ensure_that(. > 0, err_desc = "Aggregation not allowed")
+  level_l     %in% allowed_levels %>% sum() %>% ensure_that(. > 0, err_desc = "Level not allowed")
+  aggregation %in% allowed_aggr   %>% sum() %>% ensure_that(. > 0, err_desc = "Aggregation not allowed")
 
   level_l = paste0("[", paste(allowed_levels, collapse = ""), "]")
   aggregation <- paste0("[", paste(allowed_aggr, collapse = ""), "]")
