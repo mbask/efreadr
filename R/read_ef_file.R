@@ -9,9 +9,10 @@
 #'
 #' @note For semi-hourly L4 aggregation (i.e. "h" aggregation in file name) the last row is
 #' reported as month 1, day 1, hour 00:00. A normal date conversion would convert this date to
-#' be the very first half-hour of the current year whereas it should be the very first half-hour of the
-#' following year. Therefore a class date field ('efreader_date') is added to the returned data frame holding the correct
-#' date (ie: January 1st of the following year).
+#' be the very first half-hour in January 1st of the current year whereas it should be the first half-hour of the
+#' January 1st of the following year.
+#' Therefore a class date field ('efreader_date') is added to the returned data frame holding the correct
+#' date (ie: 1st January of the following year).
 #'
 #' @param file_name Full path to 1 fluxes file
 #' @importFrom readr read_csv
@@ -39,16 +40,18 @@ read_ef_file <- function(file_name) `: dataframe_with_filename_and_siteid` ({
       `[`,
       c(4, 5, 6)))
 
-  file_metadata %>% length(.) %>% ensure_that(. == 3, err_desc = "Fluxes file name malformed, is it really a fluxes file from European Fluxes Database?")
+  file_metadata %>% length() %>% ensure_that(. == 3, err_desc = "Fluxes file name malformed; is it really a fluxes file from European Fluxes Database?")
   names(file_metadata) <- c("aggregation", "site_code", "year")
 
   if (file_metadata["aggregation"] == "h") {
+    c("Month", "Day") %in% colnames(flux_data) %>% sum() %>% ensure_that(. == 2, err_desc = "'Month' and/or 'Day' columns are missing from fluxes file; is it really a fluxes file from European Fluxes Database?")
+
     flux_data$efreadr_date <- as.Date(paste(file_metadata["year"], flux_data$Month, flux_data$Day, sep = "-"))
     flux_data$efreadr_date[nrow(flux_data)] <- as.Date(
       paste(
         as.numeric(file_metadata["year"]) + 1,
-        12,
-        31,
+        01,
+        01,
         sep = "-"))
   }
 
