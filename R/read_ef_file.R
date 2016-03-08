@@ -24,11 +24,11 @@
 #' read_ef_file(file_name)
 #' @return a data frame as loaded from the file, added with 'efreadr_year', 'efreadr_file_name' and 'efreadr_site_id' columns, and 'efreadr_date' column for half-hourly fluxes
 read_ef_file <- function(file_name) `: dataframe_with_filename_and_siteid` ({
-  file_name %>% length(.) %>% ensure_that(. == 1, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
+  file_name %>% length() %>% ensure_that(. == 1, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
   message(sprintf("Loading file '%s'...", file_name))
 
-  file_name %>% file.exists(.) %>% ensure_that(isTRUE(.), err_desc = "File does not exist.")
+  file_name %>% ensure_that(file.exists(.), err_desc = "File does not exist.")
 
   flux_data     <- readr::read_csv(file_name)
   file_metadata <- c(
