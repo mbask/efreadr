@@ -1,6 +1,6 @@
 Package: efreadr
 Type: Package
-Title: A litle R package to load European Fluxes CSV files
+Title: Read European Fluxes CSV Files
 Version: 0.1.1
 Date: 2016-03-08
 Authors@R: c(person("Marco", "Bascietto", role = c("aut", "cre"),
