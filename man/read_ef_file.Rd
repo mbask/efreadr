@@ -24,9 +24,10 @@ as 'efreadr_year', 'efreader_file_name' and 'efreader_site_id'.
 \note{
 For semi-hourly L4 aggregation (i.e. "h" aggregation in file name) the last row is
 reported as month 1, day 1, hour 00:00. A normal date conversion would convert this date to
-be the very first half-hour of the current year whereas it should be the very first half-hour of the
-following year. Therefore a class date field ('efreader_date') is added to the returned data frame holding the correct
-date (ie: January 1st of the following year).
+be the very first half-hour in January 1st of the current year whereas it should be the first half-hour of the
+January 1st of the following year.
+Therefore a class date field ('efreader_date') is added to the returned data frame holding the correct
+date (ie: 1st January of the following year).
 }
 \examples{
 file_name <- system.file("extdata", "CEIP_EC_L4_d_FABar_2015_v02.txt", package = "efreadr")
