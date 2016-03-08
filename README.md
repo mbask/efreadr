@@ -1,4 +1,4 @@
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/efreadr)](http://cran.r-project.org/package=efreadr)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/efreadr)](https://cran.r-project.org/package=efreadr)
 
 # efreadr
 
