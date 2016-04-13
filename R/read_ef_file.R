@@ -128,7 +128,7 @@ read_ef_file <- function(file_name, fill_value = -9999L) `: dataframe_with_filen
   flux_data <- readr::read_csv(
     file      = file_name,
     col_types = col_types_l[[file_metadata["aggregation"]]],
-    na        = c(NA, "", missing_values))
+    na        = missing_values)
 
   parsing_problems <- problems(flux_data)
   if (nrow(parsing_problems) >  0) {
