@@ -15,4 +15,4 @@ NULL
   sum(c("efreadr_year", "efreadr_file_name", "efreadr_site_id") %in% colnames(.)) == 3,
   err_desc = "Something wrong with the returned dataframe, are any fluxes files present in the directories?")
 
-globalVariables(c(".", "starts_with", "funs"))
+globalVariables(c(".", "col_integer", "col_double", "cols", "problems", "funs"))

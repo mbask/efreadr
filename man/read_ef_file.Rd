@@ -27,7 +27,7 @@ The fluxes files code not available measures as -9999 (integer variables) or -99
 Default behaviour of \code{read_ef_file} is to treat them as \code{NA}s. All -9999L, and -9999.0, -9999.00,
 -9999.000 values are converted to \code{NA} during import of files.
 Occasionally, -9999.00 (floting point representation of NA) appear in variables that are inherently integer
-(i.e. quality control flags). This forces a type conversion of the entire variable to \code{double}.
+(i.e. sqc variables in daily flux file). This forces a type conversion of the entire variable to \code{double}.
 }
 \note{
 For semi-hourly L4 aggregation (i.e. "h" aggregation in file name) the last row is
