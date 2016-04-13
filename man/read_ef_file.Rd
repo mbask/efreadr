@@ -4,10 +4,12 @@
 \alias{read_ef_file}
 \title{Load a CSV file from the European Flux Database}
 \usage{
-read_ef_file(file_name)
+read_ef_file(file_name, fill_value = -9999L)
 }
 \arguments{
 \item{file_name}{Full path to 1 fluxes file}
+
+\item{fill_value}{a code for a not available (\code{NA}) observation in CSV file. All the observations with 'fill_value' values are converted to \code{NA}s during import. Default is -9999L.}
 }
 \value{
 a data frame as loaded from the file, added with 'efreadr_year', 'efreadr_file_name' and 'efreadr_site_id' columns, and 'efreadr_date' column for half-hourly fluxes
@@ -20,6 +22,12 @@ resolve to a valid file format name.
 \details{
 Year, file name and site identification are added as fields in the returned data frame
 as 'efreadr_year', 'efreader_file_name' and 'efreader_site_id'.
+
+The fluxes files code not available measures as -9999 (integer variables) or -9999.00 (floating point variables).
+Default behaviour of \code{read_ef_file} is to treat them as \code{NA}s. All -9999L, and -9999.0, -9999.00,
+-9999.000 values are converted to \code{NA} during import of files.
+Occasionally, -9999.00 (floting point representation of NA) appear in variables that are inherently integer
+(i.e. quality control flags). This forces a type conversion of the entire variable to \code{double}.
 }
 \note{
 For semi-hourly L4 aggregation (i.e. "h" aggregation in file name) the last row is

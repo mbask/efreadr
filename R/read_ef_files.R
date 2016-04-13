@@ -9,8 +9,6 @@
 #' Year, file name and site identification are added as fields in the returned data frame
 #' as 'efreadr_year', 'efreader_file_name' and 'efreader_site_id'.
 #'
-#' Optionally (but default behaviour), unavailable measures are converted to 'NA_real' values.
-#'
 #' @note All files in the same directory should belong to the same aggregation/level
 #' combination in order to row-wise build a consistent dataframe. Note that when 'level_l'
 #' and/or 'aggregation' arguments are not given, all files will be loaded for in the directory,
@@ -25,7 +23,7 @@
 #' @param dirs    a vector of directories where fluxes files are looked for. Defaults to current directory.
 #' @param level_l level of fluxes files (defaults to NULL). Allowed levels are (currently) 3 and 4. When NULL, either L3 and L4 files are looked for.
 #' @param aggregation aggregation of data (defaults to NULL) Allowed aggregations are (currently) "h" (half-hourly) and "d" (daily). When NULL, either "d" and "h" files are looked for.
-#' @param fill_value a code for a not available (NA) observation in CSV file. When the argument is given (default behaviour) the observations with 'fill_value' values are converted to NA_real
+#' @param ... additional arguments to be passed to \code{read_ef_file}, specifically \code{fill_value}
 #'
 #' @importFrom ensurer  ensure_that
 #' @importFrom ensurer  check_that
@@ -38,7 +36,7 @@
 #' read_ef_files(dir_name)
 #' @export
 #' @return a data frame as loaded from the file, added with 'efreadr_year', 'efreadr_file_name' and 'efreadr_site_id' columns, and 'efreadr_date' column for half-hourly fluxes
-read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, fill_value = "-9999") `: dataframe_with_filename_and_siteid` ({
+read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, ...) `: dataframe_with_filename_and_siteid` ({
 
   allowed_levels <- c(3, 4)
   allowed_aggr   <- c("h", "d")
@@ -78,15 +76,16 @@ read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, fi
 
   fluxes <- dplyr::bind_rows(
     lapply(
-      file_list,
-      read_ef_file))
+      X   = file_list,
+      FUN = read_ef_file,
+      ...))
 
-  if (!is.null(fill_value)) {
-    fluxes %<>%
-      mutate_each(
-        funs(. = ifelse(. == fill_value, NA_real_, .)),
-        -starts_with("efreadr_"))
-  }
+#   if (!is.null(fill_value)) {
+#     fluxes %<>%
+#       mutate_each(
+#         funs(. = ifelse(. == fill_value, NA_real_, .)),
+#         -starts_with("efreadr_"))
+#   }
 
   fluxes
 })

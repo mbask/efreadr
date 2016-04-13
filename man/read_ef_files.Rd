@@ -4,8 +4,7 @@
 \alias{read_ef_files}
 \title{Load all European Fluxes CSV files in one or more directories, bind all observations and fill missing data with NA_real}
 \usage{
-read_ef_files(dirs = getwd(), level_l = NULL, aggregation = NULL,
-  fill_value = "-9999")
+read_ef_files(dirs = getwd(), level_l = NULL, aggregation = NULL, ...)
 }
 \arguments{
 \item{dirs}{a vector of directories where fluxes files are looked for. Defaults to current directory.}
@@ -14,7 +13,7 @@ read_ef_files(dirs = getwd(), level_l = NULL, aggregation = NULL,
 
 \item{aggregation}{aggregation of data (defaults to NULL) Allowed aggregations are (currently) "h" (half-hourly) and "d" (daily). When NULL, either "d" and "h" files are looked for.}
 
-\item{fill_value}{a code for a not available (NA) observation in CSV file. When the argument is given (default behaviour) the observations with 'fill_value' values are converted to NA_real}
+\item{...}{additional arguments to be passed to \code{read_ef_file}, specifically \code{fill_value}}
 }
 \value{
 a data frame as loaded from the file, added with 'efreadr_year', 'efreadr_file_name' and 'efreadr_site_id' columns, and 'efreadr_date' column for half-hourly fluxes
@@ -29,8 +28,6 @@ The function assumes the file name pattern is like "^CEIP_EC_Ln_a_[a-zA-Z0-9]{5}
 where n in level and a is aggregation period (optionally given as function arguments)
 Year, file name and site identification are added as fields in the returned data frame
 as 'efreadr_year', 'efreader_file_name' and 'efreader_site_id'.
-
-Optionally (but default behaviour), unavailable measures are converted to 'NA_real' values.
 }
 \note{
 All files in the same directory should belong to the same aggregation/level
