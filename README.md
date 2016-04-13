@@ -1,4 +1,5 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/efreadr)](https://cran.r-project.org/package=efreadr)
+[![Build Status](https://travis-ci.org/hadley/readr.png?branch=master)](https://travis-ci.org/mbask/efreadr)
 
 # efreadr
 
