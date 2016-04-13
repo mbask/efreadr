@@ -73,7 +73,7 @@ read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, fi
     list.files,
     pattern = file_pattern,
     full.names = TRUE))
-print(dirs)
+
   file_list %>% length(.) %>% check_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
   fluxes <- dplyr::bind_rows(
