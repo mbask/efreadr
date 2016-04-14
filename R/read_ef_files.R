@@ -87,7 +87,7 @@ read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, ..
         ...)) %>%
       left_join(
         file_metadata_tbl,
-        by = c("efreadr_file_name" = "pathname")))
+        by = "pathname"))
 
 
 

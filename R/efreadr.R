@@ -10,9 +10,9 @@
 NULL
 
 #' @author Marco Bascietto \email{marco.bascietto@@crea.gov.it}
-`: dataframe_with_filename_and_siteid` <- ensures_that(
+`: dataframe_with_pathname` <- ensures_that(
   is.data.frame(.),
-  sum(c("efreadr_year", "efreadr_file_name", "efreadr_site_id") %in% colnames(.)) == 3,
+  "pathname" %in% colnames(.),
   err_desc = "Something wrong with the returned dataframe, are any fluxes files present in the directories?")
 
 #' @author Marco Bascietto \email{marco.bascietto@@crea.gov.it}

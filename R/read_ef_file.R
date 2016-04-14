@@ -30,7 +30,7 @@
 #' file_name <- system.file("extdata", "CEIP_EC_L4_d_FABar_2015_v02.txt", package = "efreadr")
 #' read_ef_file(file_name)
 #' @return a data frame as loaded from the file, added with 'efreadr_year', 'efreadr_file_name' and 'efreadr_site_id' columns, and 'efreadr_date' column for half-hourly fluxes
-read_ef_file <- function(file_name, fill_value = -9999L) `: dataframe_with_filename_and_siteid` ({
+read_ef_file <- function(file_name, fill_value = -9999L) `: dataframe_with_pathname` ({
 
   file_name %>% length() %>% ensure_that(. == 1, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
   file_name %>% ensure_that(file.exists(.), err_desc = "File does not exist.")
@@ -148,9 +148,9 @@ read_ef_file <- function(file_name, fill_value = -9999L) `: dataframe_with_filen
         sep = "-"))
   }
 
-  flux_data$efreadr_year      <- file_metadata["year"]
-  flux_data$efreadr_site_id   <- paste(substr(file_metadata["site_code"], 1, 2), substr(file_metadata["site_code"], 3, 5), sep = "-")
-  flux_data$efreadr_file_name <- file_name
+  #flux_data$efreadr_year      <- file_metadata["year"]
+  #flux_data$efreadr_site_id   <- paste(substr(file_metadata["site_code"], 1, 2), substr(file_metadata["site_code"], 3, 5), sep = "-")
+  flux_data$pathname <- file_name
 
   message(sprintf("Imported flux data for site '%s', year %s", flux_data$efreadr_site_id[1], file_metadata["year"]))
 
