@@ -2,6 +2,7 @@
 
 export(read_ef_file)
 export(read_ef_files)
+importFrom(dirdf,dirdf_parse)
 importFrom(dplyr,bind_rows)
 importFrom(dplyr,mutate_each)
 importFrom(ensurer,check_that)

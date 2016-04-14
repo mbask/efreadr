@@ -31,12 +31,13 @@
 #' @importFrom magrittr %<>%
 #' @importFrom dplyr    bind_rows
 #' @importFrom dplyr    mutate_each
+#' @importFrom dirdf    dirdf_parse
 #' @examples
 #' dir_name <- system.file("extdata", package = "efreadr")
 #' read_ef_files(dir_name)
 #' @export
 #' @return a data frame as loaded from the file, added with 'efreadr_year', 'efreadr_file_name' and 'efreadr_site_id' columns, and 'efreadr_date' column for half-hourly fluxes
-read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, ...) `: dataframe_with_filename_and_siteid` ({
+read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, ...) `: dataframe_with_level_aggr_and_fluxes` ({
 
   allowed_levels <- c(3, 4)
   allowed_aggr   <- c("h", "d")
@@ -74,11 +75,27 @@ read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, ..
 
   file_list %>% length(.) %>% check_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
-  fluxes <- dplyr::bind_rows(
-    lapply(
-      X   = file_list,
-      FUN = read_ef_file,
-      ...))
+  file_name_template <- "ceip_ec_level_aggregation_siteId_year_version.ext"
+  file_metadata_tbl <- dirdf_parse(basename(file_list), template = file_name_template)
+  file_data_tbl   <- file_metadata_tbl %>%
+    dplyr::group_by(level, aggregation) %>%
+    do(
+      fluxes = dplyr::bind_rows(
+        lapply(
+        X   = .$pathname,
+        FUN = read_ef_file,
+        ...)) %>%
+      left_join(
+        file_metadata_tbl,
+        by = c("efreadr_file_name" = "pathname")))
+
+
+
+#   fluxes <- dplyr::bind_rows(
+#     lapply(
+#       X   = file_list,
+#       FUN = read_ef_file,
+#       ...))
 
 #   if (!is.null(fill_value)) {
 #     fluxes %<>%
@@ -87,5 +104,6 @@ read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, ..
 #         -starts_with("efreadr_"))
 #   }
 
-  fluxes
+#  fluxes
+  file_data_tbl
 })
