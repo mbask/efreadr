@@ -44,27 +44,6 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
 
   allowed_levels <- c(2, 3, 4)
   allowed_aggr   <- c(NA, "h", "d") # NA codes for L2 flux files (L2 data are raw data not aggregated)
-  file_name_regex <- list(
-    L34 = paste0(
-      "^([A-Z_]{4,})",
-      "_L([3-4])", # level
-      "_([hdwm])", # aggr
-      "_([A-Z]{2})([A-Za-z]{3})", #country and site code
-      "_(20\\d{2})", # year
-      "_v(\\d{2})", # version
-      "?\\.txt$"),
-    L12 = paste0(
-      "^([A-Z_]{4,})",
-      "_L([1-2])", # level
-      "_([a-zA-Z]{3})", # Flx
-      "_([A-Z]{2})([A-Za-z]{3})", #country and site code
-      "_(20\\d{2})", # year
-      "_v(\\d{2})", #version
-      "_([a-zA-Z0-9]*)", # resolution
-      "?\\.txt$"))
-  file_name_names <- list(
-    L34 = c("project", "level", "aggr", "country_id", "site_id", "year", "version"),
-    L12 = c("project", "level", "type", "country_id", "site_id", "year", "version", "resolution"))
 
   dirs %>% dir.exists() %>% sum() %>% ensure_that(. > 0, err_desc = "At least one directory must exist!")
 
@@ -80,6 +59,9 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
 
   only_level %in% allowed_levels %>% sum() %>% ensure_that(. > 0, err_desc = "Level not allowed")
   only_aggr  %in% allowed_aggr   %>% sum() %>% ensure_that(. > 0, err_desc = "Aggregation not allowed")
+
+  file_name_regex <- get("file_name_regex", envir = efreadr_env)
+  file_name_names <- get("file_name_names", envir = efreadr_env)
 
   file_list <- bind_rows(
     lapply(
