@@ -69,8 +69,7 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
       list_files_by_dir,
       pattern = file_name_regex))
 
-  # introdurre un ensure per il controllo che sia dataframe con le due colonne e che il contneuto di level rientri nei nomi di file_name_regex
-
+  file_list %>% colnames(.) %>% ensure_that(setequal(., c("pathname", "level")), err_desc = "This is embarassing, 'file_list' data.frame is malformed")
   file_list %>% nrow(.) %>% ensure_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
   # Parse all file names into a unique dataframe
