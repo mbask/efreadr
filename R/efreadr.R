@@ -18,7 +18,7 @@ NULL
 #' @author Marco Bascietto \email{marco.bascietto@@crea.gov.it}
 `: dataframe_with_level_aggr_and_fluxes` <- ensures_that(
   is.data.frame(.),
-  sum(c("level", "aggregation", "fluxes") %in% colnames(.)) == 3,
+  sum(c("level", "aggr", "fluxes") %in% colnames(.)) == 3,
   err_desc = "Something wrong with the returned dataframe")
 
-globalVariables(c(".", "col_integer", "col_double", "cols", "problems", "funs"))
+globalVariables(c(".", "col_integer", "col_double", "cols", "level", "aggr"))

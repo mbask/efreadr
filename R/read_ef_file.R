@@ -4,8 +4,9 @@
 #' The file name must point to a valid European Fluxes file, in CSV format and must
 #' resolve to a valid file format name.
 #'
-#' Year, file name and site identification are added as fields in the returned data frame
-#' as 'efreadr_year', 'efreader_file_name' and 'efreader_site_id'.
+#' File name is added as a field in the returned data frame
+#' as  \code{pathname}. The \code{pathname} variable may be used to join a dataframe with
+#' file metadata such as year, site code, level, aggregation, as \code{reaf_ef_files} does.
 #'
 #' The fluxes files code not available measures as -9999 (integer variables) or -9999.00 (floating point variables).
 #' Default behaviour of \code{read_ef_file} is to treat them as \code{NA}s. All -9999L, and -9999.0, -9999.00,
@@ -27,9 +28,9 @@
 #' @importFrom magrittr %>%
 #' @export
 #' @examples
-#' file_name <- system.file("extdata", "CEIP_EC_L4_d_FABar_2015_v02.txt", package = "efreadr")
+#' file_name <- system.file(package = "efreadr", "examples", "CEIP_EC_L4_d_FABar_2015_v02.txt")
 #' read_ef_file(file_name)
-#' @return a data frame as loaded from the file, added with 'efreadr_year', 'efreadr_file_name' and 'efreadr_site_id' columns, and 'efreadr_date' column for half-hourly fluxes
+#' @return a data frame as loaded from the file, added with 'pathname' column, and 'efreadr_date' column for half-hourly fluxes files
 read_ef_file <- function(file_name, fill_value = -9999L) `: dataframe_with_pathname` ({
 
   file_name %>% length() %>% ensure_that(. == 1, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
@@ -130,7 +131,7 @@ read_ef_file <- function(file_name, fill_value = -9999L) `: dataframe_with_pathn
     col_types = col_types_l[[file_metadata["aggregation"]]],
     na        = missing_values)
 
-  parsing_problems <- problems(flux_data)
+  parsing_problems <- readr::problems(flux_data)
   if (nrow(parsing_problems) >  0) {
     message("Parsing problems:")
     print(parsing_problems)
@@ -148,8 +149,6 @@ read_ef_file <- function(file_name, fill_value = -9999L) `: dataframe_with_pathn
         sep = "-"))
   }
 
-  #flux_data$efreadr_year      <- file_metadata["year"]
-  #flux_data$efreadr_site_id   <- paste(substr(file_metadata["site_code"], 1, 2), substr(file_metadata["site_code"], 3, 5), sep = "-")
   flux_data$pathname <- file_name
 
   message(sprintf("Imported flux data for site '%s', year %s", flux_data$efreadr_site_id[1], file_metadata["year"]))

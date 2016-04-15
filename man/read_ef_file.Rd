@@ -12,7 +12,7 @@ read_ef_file(file_name, fill_value = -9999L)
 \item{fill_value}{a code for a not available (\code{NA}) observation in CSV file. All the observations with 'fill_value' values are converted to \code{NA}s during import. Default is -9999L.}
 }
 \value{
-a data frame as loaded from the file, added with 'efreadr_year', 'efreadr_file_name' and 'efreadr_site_id' columns, and 'efreadr_date' column for half-hourly fluxes
+a data frame as loaded from the file, added with 'pathname' column, and 'efreadr_date' column for half-hourly fluxes files
 }
 \description{
 File name is parsed to extract year, site identification and aggregation type.
@@ -20,8 +20,9 @@ The file name must point to a valid European Fluxes file, in CSV format and must
 resolve to a valid file format name.
 }
 \details{
-Year, file name and site identification are added as fields in the returned data frame
-as 'efreadr_year', 'efreader_file_name' and 'efreader_site_id'.
+File name is added as a field in the returned data frame
+as  \code{pathname}. The \code{pathname} variable may be used to join a dataframe with
+file metadata such as year, site code, level, aggregation, as \code{reaf_ef_files} does.
 
 The fluxes files code not available measures as -9999 (integer variables) or -9999.00 (floating point variables).
 Default behaviour of \code{read_ef_file} is to treat them as \code{NA}s. All -9999L, and -9999.0, -9999.00,
@@ -38,7 +39,7 @@ Therefore a class date field ('efreader_date') is added to the returned data fra
 date (ie: 1st January of the following year).
 }
 \examples{
-file_name <- system.file("extdata", "CEIP_EC_L4_d_FABar_2015_v02.txt", package = "efreadr")
+file_name <- system.file(package = "efreadr", "examples", "CEIP_EC_L4_d_FABar_2015_v02.txt")
 read_ef_file(file_name)
 }
 
