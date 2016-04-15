@@ -27,10 +27,6 @@
 #' @param fill_value a code for a not available (\code{NA}) observation in CSV file. All the observations with 'fill_value' values are converted to \code{NA}s during import. Default is -9999L.
 #' @importFrom readr read_csv
 #' @importFrom readr problems
-#' @importFrom readr cols
-#' @importFrom readr col_double
-#' @importFrom readr col_datetime
-#' @importFrom readr col_integer
 #' @importFrom ensurer ensure_that
 #' @importFrom magrittr %>%
 #' @export

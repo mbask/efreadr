@@ -8,7 +8,10 @@
 #' @keywords package
 #' @references Source code is hosted at GitHub (\url{https://github.com/mbask/efreadr})
 NULL
-
+#' @importFrom readr cols
+#' @importFrom readr col_double
+#' @importFrom readr col_datetime
+#' @importFrom readr col_integer
 #' @author Marco Bascietto \email{marco.bascietto@@crea.gov.it}
 `: dataframe_with_pathname` <- ensures_that(
   is.data.frame(.),
