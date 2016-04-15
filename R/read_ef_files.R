@@ -17,9 +17,9 @@
 #' following year. Therefore a class date field ('efreader_date') is added to the returned data frame holding the correct
 #' date (ie: January 1st of the following year).
 #'
-#' @param dirs    a vector of directories where fluxes files are looked for. Defaults to current directory.
-#' @param level_l level of fluxes files (defaults to NULL). Allowed levels are (currently) 3 and 4. When NULL, either L3 and L4 files are looked for.
-#' @param aggregation aggregation of data (defaults to NULL) Allowed aggregations are (currently) "h" (half-hourly) and "d" (daily). When NULL, either "d" and "h" files are looked for.
+#' @param dirs       a vector of directories where fluxes files are looked for. Defaults to current directory.
+#' @param only_level levels of fluxes files (defaults to NULL). Allowed levels are (currently) 3 and 4. When NULL, either L3 and L4 files are looked for.
+#' @param only_aggr  aggregations of data (defaults to NULL). Allowed aggregations are (currently) "h" (half-hourly) and "d" (daily). When NULL, either "d" and "h" files are looked for.
 #' @param ... additional arguments to be passed to \code{read_ef_file}, specifically \code{fill_value}
 #'
 #' @importFrom ensurer  ensure_that
@@ -40,7 +40,7 @@
 #' binds the rows of all fluxes files imported for each level/aggregation combination found.
 #' Additional columns to \code{fluxes} include metadata parsed from the file names: \code{project}, \code{ec},
 #' \code{level}, \code{aggr}, \code{country_id}, \code{site_id}, \code{year}, \code{version}, \code{pathname}, \code{dirname}
-read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, ...) `: dataframe_with_level_aggr_and_fluxes` ({
+read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, ...) `: dataframe_with_level_aggr_and_fluxes` ({
 
   allowed_levels <- c(3, 4)
   allowed_aggr   <- c("h", "d")
@@ -52,18 +52,18 @@ read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, ..
 
   dirs %>% dir.exists() %>% sum() %>% ensure_that(. > 0, err_desc = "At least one directory must exist!")
 
-  if (is.null(level_l)) {
-    level_l <- allowed_levels
-    message(sprintf("Using %s as level", paste(level_l, collapse=",")))
+  if (is.null(only_level)) {
+    only_level <- allowed_levels
+    message(sprintf("Using %s as level", paste(only_level, collapse=",")))
   }
 
-  if (is.null(aggregation)) {
-    aggregation <- allowed_aggr
-    message(sprintf("Using %s as aggregation", paste(aggregation, collapse = ",")))
+  if (is.null(only_aggr)) {
+    only_aggr <- allowed_aggr
+    message(sprintf("Using %s as aggregation", paste(only_aggr, collapse = ",")))
   }
 
-  level_l     %in% allowed_levels %>% sum() %>% ensure_that(. > 0, err_desc = "Level not allowed")
-  aggregation %in% allowed_aggr   %>% sum() %>% ensure_that(. > 0, err_desc = "Aggregation not allowed")
+  only_level %in% allowed_levels %>% sum() %>% ensure_that(. > 0, err_desc = "Level not allowed")
+  only_aggr  %in% allowed_aggr   %>% sum() %>% ensure_that(. > 0, err_desc = "Aggregation not allowed")
 
   file_list <- unlist(lapply(
     dirs,
@@ -80,7 +80,7 @@ read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, ..
     mutate(dirname = dirname(file_list))
 
   file_data_tbl <- file_metadata_tbl %>%
-    filter(level %in% level_l, aggr %in% aggregation) %>%
+    filter(level %in% only_level, aggr %in% only_aggr) %>%
     group_by(level, aggr) %>%
     do(
       fluxes = bind_rows(

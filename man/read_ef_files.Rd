@@ -4,14 +4,14 @@
 \alias{read_ef_files}
 \title{Load all European Fluxes CSV files in one or more directories, bind all observations in a list of dataframes}
 \usage{
-read_ef_files(dirs = getwd(), level_l = NULL, aggregation = NULL, ...)
+read_ef_files(dirs = getwd(), only_level = NULL, only_aggr = NULL, ...)
 }
 \arguments{
 \item{dirs}{a vector of directories where fluxes files are looked for. Defaults to current directory.}
 
-\item{level_l}{level of fluxes files (defaults to NULL). Allowed levels are (currently) 3 and 4. When NULL, either L3 and L4 files are looked for.}
+\item{only_level}{levels of fluxes files (defaults to NULL). Allowed levels are (currently) 3 and 4. When NULL, either L3 and L4 files are looked for.}
 
-\item{aggregation}{aggregation of data (defaults to NULL) Allowed aggregations are (currently) "h" (half-hourly) and "d" (daily). When NULL, either "d" and "h" files are looked for.}
+\item{only_aggr}{aggregations of data (defaults to NULL). Allowed aggregations are (currently) "h" (half-hourly) and "d" (daily). When NULL, either "d" and "h" files are looked for.}
 
 \item{...}{additional arguments to be passed to \code{read_ef_file}, specifically \code{fill_value}}
 }
