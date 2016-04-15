@@ -69,8 +69,18 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
       list_files_by_dir,
       pattern = file_name_regex))
 
-  file_list %>% colnames(.) %>% ensure_that(setequal(., c("pathname", "level")), err_desc = "This is embarassing, 'file_list' data.frame is malformed")
-  file_list %>% nrow(.) %>% ensure_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
+  file_list %>%
+    colnames(.) %>%
+    setequal(., c("pathname", "level")) %>%
+    ensure_that(isTRUE(.), err_desc = "This is embarassing, 'file_list' data.frame is malformed")
+  file_list$level %>%
+    unique(.) %>%
+    setdiff(., names(file_name_regex)) %>%
+    length(.) %>%
+    ensure_that(. == 0, err_desc = "This is embarassing, 'level' in 'file_list' data.frame is malformed")
+  file_list %>%
+    nrow(.) %>%
+    ensure_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
   # Parse all file names into a unique dataframe
   file_metadata_tbl <- file_list %>%
