@@ -153,7 +153,7 @@ read_ef_file <- function(file_name, fill_value = -9999L) `: dataframe_with_pathn
         sep = "-"))
   }
 
-  flux_data$pathname <- file_name
+  flux_data$pathname <- basename(file_name)
 
   message(sprintf("Imported flux data for site '%s', year %s", flux_data$efreadr_site_id[1], file_metadata["year"]))
 
