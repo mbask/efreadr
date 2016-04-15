@@ -38,17 +38,32 @@
 #' @export
 #' @return a data frame of 3 variables: \code{level}, \code{aggr}, and \code{fluxes}. \code{fluxes} is a dataframe that
 #' binds the rows of all fluxes files imported for each level/aggregation combination found.
-#' Additional columns to \code{fluxes} include metadata parsed from the file names: \code{project}, \code{ec},
+#' Additional columns to \code{fluxes} include metadata parsed from the file names: \code{project},
 #' \code{level}, \code{aggr}, \code{country_id}, \code{site_id}, \code{year}, \code{version}, \code{pathname}, \code{dirname}
 read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, ...) `: dataframe_with_level_aggr_and_fluxes` ({
 
-  allowed_levels <- c(3, 4)
+  allowed_levels <- c(2, 3, 4)
   allowed_aggr   <- c("h", "d")
-  file_name_regex <- paste0(
-    "^([A-Z]{4})_(EC)_L([1-4])",
-    "_([hdwm])_([A-Z]{2})([A-Za-z]{3})",
-    "_(20\\d{2})_v(\\d{2})?\\.txt$")
-  file_name_names <- c("project", "ec", "level", "aggr", "country_id", "site_id", "year", "version")
+  file_name_regex <- list(
+    L34 = paste0(
+      "^([A-Z_]{4,})",
+      "_L([3-4])", # level
+      "_([hdwm])", # aggr
+      "_([A-Z]{2})([A-Za-z]{3})", #country and site code
+      "_(20\\d{2})", # year
+      "_v(\\d{2})", # version
+      "?\\.txt$"),
+    L12 = paste0(
+      "^([A-Z_]{4,})",
+      "_L([1-2])", # level
+      "_([a-zA-Z]{3})", # Flx
+      "_([A-Z]{2})([A-Za-z]{3})", #country and site code
+      "_(20\\d{2})", # year
+      "_v(\\d{2})", #version
+      "_([a-zA-Z0-9]*)", # resolution
+      "?\\.txt$"))
+  file_name_L34_names <- c("project", "level", "aggr", "country_id", "site_id", "year", "version")
+  file_name_L12_names <- c("project", "level", "type", "country_id", "site_id", "year", "version", "resolution")
 
   dirs %>% dir.exists() %>% sum() %>% ensure_that(. > 0, err_desc = "At least one directory must exist!")
 
@@ -65,11 +80,13 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
   only_level %in% allowed_levels %>% sum() %>% ensure_that(. > 0, err_desc = "Level not allowed")
   only_aggr  %in% allowed_aggr   %>% sum() %>% ensure_that(. > 0, err_desc = "Aggregation not allowed")
 
-  file_list <- unlist(lapply(
-    dirs,
-    list.files,
-    pattern = file_name_regex,
-    full.names = TRUE))
+  file_list <- bind_rows(
+    lapply(
+      c(dirs),
+      list_files,
+      pattern = file_name_regex))
+
+   print(file_list)
 
   file_list %>% length(.) %>% ensure_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
@@ -78,6 +95,8 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
     regexp    = file_name_regex,
     colnames  = file_name_names) %>%
     mutate(dirname = dirname(file_list))
+
+  print(file_metadata_tbl)
 
   file_data_tbl <- file_metadata_tbl %>%
     filter(level %in% only_level, aggr %in% only_aggr) %>%
