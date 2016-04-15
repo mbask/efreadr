@@ -43,7 +43,7 @@
 read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, ...) `: dataframe_with_level_aggr_and_fluxes` ({
 
   allowed_levels <- c(2, 3, 4)
-  allowed_aggr   <- c("h", "d")
+  allowed_aggr   <- c(NA, "h", "d") # NA codes for L2 flux files (L2 data are raw data not aggregated)
   file_name_regex <- list(
     L34 = paste0(
       "^([A-Z_]{4,})",
@@ -62,8 +62,9 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
       "_v(\\d{2})", #version
       "_([a-zA-Z0-9]*)", # resolution
       "?\\.txt$"))
-  file_name_L34_names <- c("project", "level", "aggr", "country_id", "site_id", "year", "version")
-  file_name_L12_names <- c("project", "level", "type", "country_id", "site_id", "year", "version", "resolution")
+  file_name_names <- list(
+    L34 = c("project", "level", "aggr", "country_id", "site_id", "year", "version"),
+    L12 = c("project", "level", "type", "country_id", "site_id", "year", "version", "resolution"))
 
   dirs %>% dir.exists() %>% sum() %>% ensure_that(. > 0, err_desc = "At least one directory must exist!")
 
@@ -82,31 +83,44 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
 
   file_list <- bind_rows(
     lapply(
-      c(dirs),
-      list_files,
+      dirs,
+      list_files_by_dir,
       pattern = file_name_regex))
 
-   print(file_list)
+  # introdurre un ensure per il controllo che sia dataframe con le due colonne e che il contneuto di level rientri nei nomi di file_name_regex
 
-  file_list %>% length(.) %>% ensure_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
+  file_list %>% nrow(.) %>% ensure_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
-  file_metadata_tbl  <- dirdf_parse(
-    pathnames = basename(file_list),
-    regexp    = file_name_regex,
-    colnames  = file_name_names) %>%
-    mutate(dirname = dirname(file_list))
+  # Parse all file names into a unique dataframe
+  file_metadata_tbl <- file_list %>%
+    group_by(level) %>%
+    do(
+      data.frame(
+        dirname = dirname(.$pathname),
+        dirdf_parse(
+          pathnames = basename(.$pathname),
+          regexp    = file_name_regex[[.$level[1]]],
+          colnames  = file_name_names[[.$level[1]]])))
 
-  print(file_metadata_tbl)
 
+  # Filter out unwanted levels and/or aggregations and group table
+  # according to level/aggregations combinations
+  # import flux files as list elements
+  # bind all list elements in a dataframe
+  # join the dataframe to the metadata using pathname as join key
   file_data_tbl <- file_metadata_tbl %>%
-    filter(level %in% only_level, aggr %in% only_aggr) %>%
+    filter(
+      level %in% only_level,
+      aggr  %in% only_aggr) %>%
     group_by(level, aggr) %>%
     do(
       fluxes = bind_rows(
         lapply(
-        X   = paste(.$dirname, .$pathname, sep = "/"),
-        FUN = read_ef_file,
-        ...)) %>%
+          X   = paste(.$dirname, .$pathname, sep = "/"),
+          FUN = read_ef_file,
+          aggregation = .$aggr[1], # as parsed by dirdf::dirdf_parse
+          year        = .$year[1], # as parsed by dirdf::dirdf_parse
+          ...)) %>%
       left_join(
         file_metadata_tbl,
         by = "pathname"))

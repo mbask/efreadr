@@ -4,10 +4,15 @@
 \alias{read_ef_file}
 \title{Load a CSV file from the European Flux Database}
 \usage{
-read_ef_file(file_name, fill_value = -9999L)
+read_ef_file(file_name, aggregation = NA_character_, year = NA_integer_,
+  fill_value = -9999L)
 }
 \arguments{
 \item{file_name}{Full path to 1 fluxes file}
+
+\item{aggregation}{character string, aggregation of the flux file to be imported (default \code{NA_character_}). This is important to properly define variable types for each aggregation type. When \code{NA_character_} it is assumed no aggregation (eg L2 files).}
+
+\item{year}{integer value (default \code{NA_integer}). Important to correctly add \code{efreadr_date} field}
 
 \item{fill_value}{a code for a not available (\code{NA}) observation in CSV file. All the observations with 'fill_value' values are converted to \code{NA}s during import. Default is -9999L.}
 }
@@ -35,7 +40,7 @@ For semi-hourly L4 aggregation (i.e. "h" aggregation in file name) the last row 
 reported as month 1, day 1, hour 00:00. A normal date conversion would convert this date to
 be the very first half-hour in January 1st of the current year whereas it should be the first half-hour of the
 January 1st of the following year.
-Therefore a class date field ('efreader_date') is added to the returned data frame holding the correct
+Therefore a class date field (\code{efreader_date}) is added to the returned data frame holding the correct
 date (ie: 1st January of the following year).
 }
 \examples{

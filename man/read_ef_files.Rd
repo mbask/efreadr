@@ -18,7 +18,7 @@ read_ef_files(dirs = getwd(), only_level = NULL, only_aggr = NULL, ...)
 \value{
 a data frame of 3 variables: \code{level}, \code{aggr}, and \code{fluxes}. \code{fluxes} is a dataframe that
 binds the rows of all fluxes files imported for each level/aggregation combination found.
-Additional columns to \code{fluxes} include metadata parsed from the file names: \code{project}, \code{ec},
+Additional columns to \code{fluxes} include metadata parsed from the file names: \code{project},
 \code{level}, \code{aggr}, \code{country_id}, \code{site_id}, \code{year}, \code{version}, \code{pathname}, \code{dirname}
 }
 \description{
