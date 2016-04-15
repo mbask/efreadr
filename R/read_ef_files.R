@@ -71,7 +71,7 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
     pattern = file_name_regex,
     full.names = TRUE))
 
-  file_list %>% length(.) %>% check_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
+  file_list %>% length(.) %>% ensure_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
   file_metadata_tbl  <- dirdf_parse(
     pathnames = basename(file_list),
