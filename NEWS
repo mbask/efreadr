@@ -1,3 +1,6 @@
+0.2.0
+Combinations of aggregation/levels are now kept separate. A dataframe of level, aggregation and fluxes variables is returned. The fluxes dataframe holds data imported from unique combinations of level/aggregation files.
+File names are parsed thanks to dirdf package and added as metadata variables in the returned dataframe (eg year, country_id, site_id, vesion, etc.).
 0.1.2
 Missing values (-9999 and -9999.00) are coded as NA_integer and NA_real during import by read_ef_file. Previously they were replaced to NA_real after importing the files by read_ef_files. Integer variables are not forced to double during the replacement of -9999L to NA_real. Unfortunately fluxes files may code -9999.99 as missing values for integer variables. While upon importing those missing values are converted to NA, the entire variable is imported as double.
 0.1.1
