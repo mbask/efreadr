@@ -24,6 +24,10 @@
 #' @param file_name Full path to 1 fluxes file
 #' @param fill_value a code for a not available (\code{NA}) observation in CSV file. All the observations with 'fill_value' values are converted to \code{NA}s during import. Default is -9999L.
 #' @importFrom readr read_csv
+#' @importFrom readr problems
+#' @importFrom readr cols
+#' @importFrom readr col_double
+#' @importFrom readr col_integer
 #' @importFrom ensurer ensure_that
 #' @importFrom magrittr %>%
 #' @export
@@ -131,7 +135,7 @@ read_ef_file <- function(file_name, fill_value = -9999L) `: dataframe_with_pathn
     col_types = col_types_l[[file_metadata["aggregation"]]],
     na        = missing_values)
 
-  parsing_problems <- readr::problems(flux_data)
+  parsing_problems <- problems(flux_data)
   if (nrow(parsing_problems) >  0) {
     message("Parsing problems:")
     print(parsing_problems)

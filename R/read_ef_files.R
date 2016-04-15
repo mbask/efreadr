@@ -27,7 +27,10 @@
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #' @importFrom dplyr    bind_rows
-#' @importFrom dplyr    mutate_each
+#' @importFrom dplyr    mutate
+#' @importFrom dplyr    do
+#' @importFrom dplyr    group_by
+#' @importFrom dplyr    left_join
 #' @importFrom dirdf    dirdf_parse
 #' @examples
 #' dir_name <- system.file(package = "efreadr", "examples")
@@ -70,22 +73,22 @@ read_ef_files <- function(dirs = getwd(), level_l = NULL, aggregation = NULL, ..
 
   file_list %>% length(.) %>% check_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
-  file_metadata_tbl  <- dirdf::dirdf_parse(
+  file_metadata_tbl  <- dirdf_parse(
     pathnames = basename(file_list),
     regexp    = file_name_regex,
     colnames  = file_name_names) %>%
-    dplyr::mutate(dirname = dirname(file_list))
-  print(file_metadata_tbl)
+    mutate(dirname = dirname(file_list))
+
   file_data_tbl <- file_metadata_tbl %>%
     filter(level %in% level_l, aggr %in% aggregation) %>%
-    dplyr::group_by(level, aggr) %>%
-    dplyr::do(
-      fluxes = dplyr::bind_rows(
+    group_by(level, aggr) %>%
+    do(
+      fluxes = bind_rows(
         lapply(
         X   = paste(.$dirname, .$pathname, sep = "/"),
         FUN = read_ef_file,
         ...)) %>%
-      dplyr::left_join(
+      left_join(
         file_metadata_tbl,
         by = "pathname"))
 

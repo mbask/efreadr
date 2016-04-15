@@ -21,4 +21,4 @@ NULL
   sum(c("level", "aggr", "fluxes") %in% colnames(.)) == 3,
   err_desc = "Something wrong with the returned dataframe")
 
-globalVariables(c(".", "col_integer", "col_double", "cols", "level", "aggr"))
+globalVariables(c(".", "level", "aggr"))
