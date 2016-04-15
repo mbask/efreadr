@@ -3,7 +3,7 @@
 
 # efreadr
 
-The package provides two functions to load and row-wise bind CSV files distributed by the database. Currently only L3 and L4 (L=Level), half-hourly and daily (aggregation) files are supported.
+The package provides two functions to load and row-wise bind CSV files distributed by the database. Currently L2, L3, and L4 (L=Level), half-hourly and daily (aggregation) files are supported.
 
 # What is the European Eddy Fluxes Database Cluster?
 
