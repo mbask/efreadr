@@ -130,6 +130,6 @@ local(
 local(
   file_name_names <- list(
     L34 = c("project", "level", "aggr", "country_id", "site_id", "year", "version"),
-    L12 = c("project", "level", "type", "country_id", "site_id", "year", "version", "resolution")),
+    L12 = c("project", "level", "type", "country_id", "site_id", "year", "version", "time_res")),
   envir = efreadr_env
 )

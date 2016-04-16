@@ -38,14 +38,18 @@
 #' @export
 #' @return a data frame of 3 variables: \code{level}, \code{aggr}, and \code{fluxes}. \code{fluxes} is a dataframe that
 #' binds the rows of all fluxes files imported for each level/aggregation combination found.
-#' Additional columns to \code{fluxes} include metadata parsed from the file names: \code{project},
-#' \code{level}, \code{aggr}, \code{country_id}, \code{site_id}, \code{year}, \code{version}, \code{pathname}, \code{dirname}
+#' Additional columns to \code{fluxes} include metadata parsed from the file names:
+#' For levels 3 and 4: \code{project}, \code{level}, \code{aggr}, \code{country_id}, \code{site_id}, \code{year}, \code{version}, \code{pathname}, \code{dirname}
+#' For level 2: \code{project}, \code{level}, \code{type}, \code{country_id}, \code{site_id}, \code{year}, \code{version}, \code{time_res}, \code{pathname}, \code{dirname}
 read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, ...) `: dataframe_with_level_aggr_and_fluxes` ({
 
   allowed_levels <- c(2, 3, 4)
   allowed_aggr   <- c(NA, "h", "d") # NA codes for L2 flux files (L2 data are raw data not aggregated)
 
-  dirs %>% dir.exists() %>% sum() %>% ensure_that(. > 0, err_desc = "At least one directory must exist!")
+  dirs %>%
+    dir.exists() %>%
+    sum() %>%
+    ensure_that(. > 0, err_desc = "At least one directory must exist!")
 
   if (is.null(only_level)) {
     only_level <- allowed_levels
@@ -57,8 +61,12 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
     message(sprintf("Using %s as aggregation", paste(only_aggr, collapse = ",")))
   }
 
-  only_level %in% allowed_levels %>% sum() %>% ensure_that(. > 0, err_desc = "Level not allowed")
-  only_aggr  %in% allowed_aggr   %>% sum() %>% ensure_that(. > 0, err_desc = "Aggregation not allowed")
+  only_level %in% allowed_levels %>%
+    sum() %>%
+    ensure_that(. > 0, err_desc = "Level not allowed")
+  only_aggr  %in% allowed_aggr %>%
+    sum() %>%
+    ensure_that(. > 0, err_desc = "Aggregation not allowed")
 
   file_name_regex <- get("file_name_regex", envir = efreadr_env)
   file_name_names <- get("file_name_names", envir = efreadr_env)
