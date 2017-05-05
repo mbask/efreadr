@@ -5,5 +5,6 @@ cache: packages
 r_packages:
   - rmarkdown
 
-r_github_packages:
-  - ropenscilabs/dirdf
+#r_github_packages:
+#  - ropenscilabs/dirdf
+#
