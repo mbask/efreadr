@@ -46,4 +46,3 @@ date (ie: January 1st of the following year).
 dir_name <- system.file(package = "efreadr", "examples")
 read_ef_files(dir_name)
 }
-

@@ -1,3 +1,5 @@
+0.2.2
+Removed dirdf dependency as it looks like it is no longer maintained. The dirdf package dirdf_parse function along with some helper functions were integrated in efreadr package code
 0.2.1
 First support for L2 flux files
 0.2.0
