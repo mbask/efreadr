@@ -61,7 +61,7 @@ read_ef_file <- function(file_name, aggregation = NA_character_, year = NA_integ
     col_types = local(col_types_l[[aggregation]], envir = efreadr_env),
     na        = missing_values)
 
-  parsing_problems <- problems(flux_data)
+  parsing_problems <- readr::problems(flux_data)
   if (nrow(parsing_problems) >  0) {
     message("Parsing problems:")
     print(parsing_problems)
@@ -70,7 +70,7 @@ read_ef_file <- function(file_name, aggregation = NA_character_, year = NA_integ
   }
 
   if (aggregation == "h") {
-    c("Month", "Day") %in% colnames(flux_data) %>% sum() %>% ensure_that(. == 2, err_desc = "'Month' and/or 'Day' columns are missing from fluxes file; is it really a fluxes file from European Fluxes Database?")
+    c("Month", "Day") %in% colnames(flux_data) %>% sum() %>% ensurer::ensure_that(. == 2, err_desc = "'Month' and/or 'Day' columns are missing from fluxes file; is it really a fluxes file from European Fluxes Database?")
 
     flux_data$efreadr_date <- as.Date(
       paste(

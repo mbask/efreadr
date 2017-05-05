@@ -27,11 +27,12 @@
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #' @importFrom dplyr    bind_rows
+#' @importFrom dplyr    setequal
+#' @importFrom dplyr    setdiff
 #' @importFrom dplyr    mutate
 #' @importFrom dplyr    do
 #' @importFrom dplyr    group_by
 #' @importFrom dplyr    left_join
-#' @importFrom dirdf    dirdf_parse
 #' @examples
 #' dir_name <- system.file(package = "efreadr", "examples")
 #' read_ef_files(dir_name)
@@ -49,11 +50,11 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
   dirs %>%
     dir.exists() %>%
     sum() %>%
-    ensure_that(. > 0, err_desc = "At least one directory must exist!")
+    ensurer::ensure_that(. > 0, err_desc = "At least one directory must exist!")
 
   if (is.null(only_level)) {
     only_level <- allowed_levels
-    message(sprintf("Using %s as level", paste(only_level, collapse=",")))
+    message(sprintf("Using %s as level", paste(only_level, collapse = ",")))
   }
 
   if (is.null(only_aggr)) {
@@ -63,10 +64,10 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
 
   only_level %in% allowed_levels %>%
     sum() %>%
-    ensure_that(. > 0, err_desc = "Level not allowed")
+    ensurer::ensure_that(. > 0, err_desc = "Level not allowed")
   only_aggr  %in% allowed_aggr %>%
     sum() %>%
-    ensure_that(. > 0, err_desc = "Aggregation not allowed")
+    ensurer::ensure_that(. > 0, err_desc = "Aggregation not allowed")
 
   file_name_regex <- get("file_name_regex", envir = efreadr_env)
   file_name_names <- get("file_name_names", envir = efreadr_env)
@@ -79,21 +80,21 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
 
   file_list %>%
     colnames(.) %>%
-    setequal(., c("pathname", "level")) %>%
-    ensure_that(isTRUE(.), err_desc = "This is embarassing, 'file_list' data.frame is malformed")
+    dplyr::setequal(., c("pathname", "level")) %>%
+    ensurer::ensure_that(isTRUE(.), err_desc = "This is embarassing, 'file_list' data.frame is malformed")
   file_list$level %>%
     unique(.) %>%
-    setdiff(., names(file_name_regex)) %>%
+    dplyr::setdiff(., names(file_name_regex)) %>%
     length(.) %>%
-    ensure_that(. == 0, err_desc = "This is embarassing, 'level' in 'file_list' data.frame is malformed")
+    ensurer::ensure_that(. == 0, err_desc = "This is embarassing, 'level' in 'file_list' data.frame is malformed")
   file_list %>%
     nrow(.) %>%
-    ensure_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
+    ensurer::ensure_that(. > 0, err_desc = "Trying to load too many files at once or none at all, try with one at a time...")
 
   # Parse all file names into a unique dataframe
   file_metadata_tbl <- file_list %>%
-    group_by(level) %>%
-    do(
+    dplyr::group_by(level) %>%
+    dplyr::do(
       data.frame(
         dirname = dirname(.$pathname),
         dirdf_parse(
@@ -108,11 +109,11 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
   # bind all list elements in a dataframe
   # join the dataframe to the metadata using pathname as join key
   file_data_tbl <- file_metadata_tbl %>%
-    filter(
+    dplyr::filter(
       level %in% only_level,
       aggr  %in% only_aggr) %>%
-    group_by(level, aggr) %>%
-    do(
+    dplyr::group_by(level, aggr) %>%
+    dplyr::do(
       fluxes = bind_rows(
         lapply(
           X   = paste(.$dirname, .$pathname, sep = "/"),
@@ -120,7 +121,7 @@ read_ef_files <- function(dirs = getwd(), only_level = NULL, only_aggr = NULL, .
           aggregation = .$aggr[1], # as parsed by dirdf::dirdf_parse
           year        = .$year[1], # as parsed by dirdf::dirdf_parse
           ...)) %>%
-      left_join(
+        dplyr::left_join(
         file_metadata_tbl,
         by = "pathname"))
 
